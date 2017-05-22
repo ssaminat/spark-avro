@@ -1,0 +1,2 @@
+For using Seq for sequence of strings as in scala, import this an dtry using it
+import scala.collection.immutable.Seq;

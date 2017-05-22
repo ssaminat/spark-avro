@@ -1,0 +1,28 @@
+package com.journaldev.designpattern.factory
+ 
+trait Computer{
+  def getRAM():String
+  def getHDD():String
+  def getCPU():String
+ 
+  override def toString = "RAM= " + getRAM +", HDD=" + getHDD + ", CPU=" + getCPU
+}
+ 
+private class PC(val ram:String, val hdd:String, val cpu:String) extends Computer{
+  def getRAM():String =  ram
+  def getHDD():String = hdd
+  def getCPU():String = cpu
+}
+ 
+private class Server(val ram:String, val hdd:String, val cpu:String) extends Computer{
+  def getRAM():String =  ram
+  def getHDD():String = hdd
+  def getCPU():String = cpu
+}
+ 
+object ComputerFactory{
+  def apply(compType:String, ram:String, hdd:String, cpu:String) = compType.toUpperCase match {
+        case "PC" => new PC(ram,hdd,cpu)
+        case "SERVER" => new Server(ram,hdd,cpu)
+      }
+}
