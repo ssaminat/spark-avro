@@ -1,0 +1,27 @@
+RDD,beanclass
+javardd,beanclass
+rowrdd,structtype
+
+
+scala> val read_file = sc.textFile("file:///CTRLFW/EBBS/SCUDEE/INCOMING/gps/all/TL_CPSF.D2017033.T215120923.R000042")
+17/05/03 16:17:41 INFO MemoryStore: Block broadcast_5 stored as values in memory (estimated size 345.1 KB, free 1115.9 KB)
+17/05/03 16:17:41 INFO MemoryStore: Block broadcast_5_piece0 stored as bytes in memory (estimated size 28.6 KB, free 1144.5 KB)
+17/05/03 16:17:41 INFO BlockManagerInfo: Added broadcast_5_piece0 in memory on localhost:35164 (size: 28.6 KB, free: 511.0 MB)
+17/05/03 16:17:41 INFO SparkContext: Created broadcast 5 from textFile at <console>:29
+read_file: org.apache.spark.rdd.RDD[String] = file:///CTRLFW/EBBS/SCUDEE/INCOMING/gps/all/TL_CPSF.D2017033.T215120923.R000042 MapPartitionsRDD[22] at textFile at <console>:29
+
+scala> val schemaString = "row_id,j_time"
+schemaString: String = row_id,j_time
+
+
+scala> val schema = StructType(schemaString.split(',').map(x=>StructField(x,StringType,true)))
+schema: org.apache.spark.sql.types.StructType = StructType(StructField(row_id,StringType,true), StructField(j_time,StringType,true))
+
+scala> import org.apache.spark.sql.Row;
+import org.apache.spark.sql.Row
+
+scala> val DF = read_file.map(_.split('\u0001')).map(x=>Row(x(0),x(1)))
+DF: org.apache.spark.rdd.RDD[org.apache.spark.sql.Row] = MapPartitionsRDD[24] at map at <console>:34
+
+
+scala> sqlContext.createDataFrame(DF,schema).registerTempTable("employee")

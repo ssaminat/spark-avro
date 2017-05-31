@@ -1,0 +1,24 @@
+import java.text.SimpleDateFormat
+import java.util.Date
+import scala.io.Source
+import java.io.File
+import scala.util.Try
+
+  val readFile = Source.fromFile(new File("/CTRLFW/SCUDEE/bala/TL_THRESHOLD_ROLLUP.D2017051.T221737601.R000006")).getLines()
+  val indices = List(0)
+val formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+formatter.setLenient(false)
+
+val (valid,invalid) = readFile.partition{line =>
+
+val date = indices.collect(line.split('\u0001'))
+
+var tsList = for(tsElemet <- date) yield
+{
+  Try[Date](formatter.parse(tsElemet)).isSuccess
+}
+tsList.exists(_!=false)
+}
+
+invalid.foreach(println)
+valid.foreach(println)

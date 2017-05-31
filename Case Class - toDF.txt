@@ -1,0 +1,40 @@
+scala> val readFile=sc.textFile("file:///CTRLFW/EBBS/SCUDEE/INCOMING/gps/all/TL_CPSF.D2017033")
+17/05/02 17:49:57 INFO MemoryStore: Block broadcast_8 stored as values in memory (estimated size 345.1 KB, free 1092.4 KB)
+17/05/02 17:49:57 INFO MemoryStore: Block broadcast_8_piece0 stored as bytes in memory (estimated size 28.6 KB, free 1121.0 KB)
+17/05/02 17:49:57 INFO BlockManagerInfo: Added broadcast_8_piece0 in memory on localhost:41649 (size: 28.6 KB, free: 511.0 MB)
+17/05/02 17:49:57 INFO SparkContext: Created broadcast 8 from textFile at <console>:27
+readFile: org.apache.spark.rdd.RDD[String] = file:///CTRLFW/EBBS/SCUDEE/INCOMING/gps/all/TL_CPSF.D2017033 MapPartitionsRDD[20] at textFile at <console>:27
+
+scala> case class mf_case_class(row_id:String,j_time:String)
+defined class mf_case_class
+
+scala> val case_match = readFile.map(_.split('\u0001')).map {case Array(row_id,j_time)=>mf_case_class(row_id,j_time)}
+case_match: org.apache.spark.rdd.RDD[mf_case_class] = MapPartitionsRDD[32] at map at <console>:31
+
+scala> val myTable = case_match.toDF()
+myTable: org.apache.spark.sql.DataFrame = [row_id: string, j_time: string]
+
+scala> val myTable = case_match.toDF().registerTempTable("Table")
+myTable: Unit = ()
+
+or
+
+scala> val myTable = case_match.toDF()
+myTable: org.apache.spark.sql.DataFrame = [row_id: string, j_time: string]
+
+scala> myTable.registerTempTable("Table")
+
+scala> sqlContext.sql("select * from Table").show -> show will not work with SQL
+17/05/02 18:05:09 INFO ParseDriver: Parsing command: select * from Table
+17/05/02 18:05:09 INFO ParseDriver: Parse Completed
+org.apache.hadoop.mapred.InvalidInputException: Input path does not exist: file:/CTRLFW/EBBS/SCUDEE/INCOMING/gps/all/TL_CPSF.D2017033
+        at org.apache.hadoop.mapred.FileInputFormat.singleThreadedListStatus(FileInputFormat.java:287)
+        at org.apache.hadoop.mapred.FileInputFormat.listStatus(FileInputFormat.java:229)
+
+
+scala> val querey = sqlContext.sql("select * from Table")
+17/05/02 18:06:25 INFO ParseDriver: Parsing command: select * from Table
+17/05/02 18:06:25 INFO ParseDriver: Parse Completed
+querey: org.apache.spark.sql.DataFrame = [row_id: string, j_time: string]
+
+scala> querey.show
