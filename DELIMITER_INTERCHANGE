@@ -1,0 +1,42 @@
+import java.util.Date
+import scala.io.Source
+import java.io.File
+val readFile=Source.fromFile(new File("/CTRLFW/SCUDEE/bala/TL_THRESHOLD_ROLLUP.D2017051.T221737601Siva.R000006")).getLines
+def process(readFile:Iterator[String]):Iterator[String]=
+{
+val list=List("-",".") 
+val dmap=Map('-'->'_','.'->'_')
+val x=readFile.map(x=>x.map(y=>dmap.getOrElse(y,y)))
+return x
+}
+val delimitedfile=process(readFile)
+
+NOTE: TO ELIMIATE REPEATING CHARACTERS,
+def test(lis:List[Char]):List[Char]= lis match{
+case Nil => Nil
+case h if h=='_'::tail =>h::test(tail.dropWhile(_==h))
+case h::tail =>h::test(tail)
+}
+
+NOTE: TO ELIMIATE only if '_' gets repeated,
+def test(lis:List[Char]):List[Char]= lis match{
+case Nil => Nil
+case h::tail if(h=='_')=>h::test(tail.dropWhile(_==h))
+case h::tail =>h::test(tail)
+}
+
+val delimitedfile1=delimitedfile.map(x=>x.toList).map(y=>test(y)))
+
+val delimitedfile1=delimitedfile.map(x=>x.split("_"))
+val delimitedfile2=delimitedfile1.map(x=>x.mkString(","))
+
+delimitedfile1.foreach(x=>x.foreach(println))
+
+
+val delimitedfile1=delimitedfile.map(x=>x.toList).map(y=>test(y))
+
+NOTE: FOR Iterator[List[Char]] to Iterator[String] is below,
+for(x<-delimitedfile1)yield (x.mkString)
+
+
+val delimitedfile1=delimitedfile.map(x=>x.toList).map(y=>test(y)).mkString(",")
