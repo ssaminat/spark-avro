@@ -1,5 +1,0 @@
-Whenever I am doing some spark funcation like(map,flatmap,sparksql queries- it can be say it as tasks using sparkcontext) will only be run parallely in all executors.
-
-once I give some action(collect,collectAsList, collectASMaop etc) and store the resultant in some map or list or something, then upcoming operation will be happening only on driver(no parallel execution). 
-
-So I need to try to make all possible operations using sparkcontext(spark functions). 
